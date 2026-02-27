@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let products = [];
 
-    /* 1️⃣ Load products list */
     fetch("https://fakestoreapi.com/products")
         .then((res) => res.json())
         .then((data) => {
@@ -14,7 +13,6 @@ document.addEventListener("DOMContentLoaded", () => {
             loadProductDetail(products[0].id);
         });
 
-    /* 🔹 Render search results */
     function renderResults(list) {
         resultsBox.innerHTML = "";
 
@@ -40,13 +38,11 @@ document.addEventListener("DOMContentLoaded", () => {
         resultsBox.classList.remove("hidden");
     }
 
-    /* 2️⃣ Show products when input is focused */
     searchInput.addEventListener("focus", () => {
         // show first 6 products by default
         renderResults(products.slice(0, 6));
     });
 
-    /* 3️⃣ Search handler */
     searchInput.addEventListener("input", () => {
         const query = searchInput.value.toLowerCase();
 
@@ -62,7 +58,6 @@ document.addEventListener("DOMContentLoaded", () => {
         renderResults(filtered);
     });
 
-    /* 4️⃣ Hide results when clicking outside */
     document.addEventListener("click", (e) => {
         if (
             !e.target.closest("#search-input") &&
@@ -73,7 +68,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-/* 3️⃣ Fetch SINGLE product detail */
 function loadProductDetail(productId) {
     fetch(`https://fakestoreapi.com/products/${productId}`)
         .then((res) => res.json())
@@ -84,8 +78,6 @@ function loadProductDetail(productId) {
             console.error("Failed to load product detail", err);
         });
 }
-
-/* 4️⃣ Update UI */
 function setSelectedProduct(product) {
     document.getElementById("selected-image").src = product.image;
     document.getElementById("selected-title").innerText = product.title;
@@ -95,7 +87,6 @@ function setSelectedProduct(product) {
     document.getElementById("selected-category").innerText = product.category;
     document.getElementById("selected-rating").innerText = product.rating.rate;
 
-    // ✅ Store product data for cart
     const addToCartBtn = document.getElementById("add-to-cart-btn");
     addToCartBtn.dataset.productId = product.id;
     addToCartBtn.dataset.price = product.price;
@@ -121,10 +112,19 @@ document.getElementById("add-to-cart-btn").addEventListener("click", () => {
         .then((res) => res.json())
         .then((data) => {
             console.log("🛒 Cart:", data.cart);
-            alert("Added to cart ✅");
+            alert("Added to cart");
         })
         .catch((err) => {
             console.error(err);
-            alert("Failed ❌");
+            alert("Failed");
         });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    fetch("/cart")
+        .then((res) => res.json())
+        .then((data) => {
+            updateCartCount(data.cart);
+        })
+        .catch((err) => console.error(err));
 });

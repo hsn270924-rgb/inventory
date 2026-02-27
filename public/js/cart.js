@@ -1,10 +1,12 @@
 function addToCart(productId, price) {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]');
+    if (!csrfToken) return;
+
     fetch("/cart/add", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')
-                .content,
+            "X-CSRF-TOKEN": csrfToken.content,
         },
         body: JSON.stringify({
             product_id: productId,
@@ -15,7 +17,10 @@ function addToCart(productId, price) {
         .then((data) => {
             console.log(data.cart);
             alert(data.message);
+
+            updateCartCount(data.cart);
         });
+    // .catch((err) => console.error(err));
 }
 
 document
@@ -31,3 +36,9 @@ document
 
         addToCart(productId, price);
     });
+
+function updateCartCount(cart) {
+    console.log(cart);
+    const count = cart.items ? cart.items.length : 0;
+    document.getElementById("cart-count").innerText = count;
+}
