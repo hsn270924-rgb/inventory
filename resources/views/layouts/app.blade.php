@@ -4,11 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <title>@yield('title', 'App')</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     @vite(['resources/js/app.js'])
 </head>
 
 <body class="bg-gray-50">
     @yield('content')
+    <script src="/js/cart.js"></script>
     <script src="/js/product-search.js"></script>
 
     <!-- FOOTER -->

@@ -72,4 +72,9 @@ function setSelectedProduct(product) {
     document.getElementById("selected-price").innerText = `$${product.price}`;
     document.getElementById("selected-category").innerText = product.category;
     document.getElementById("selected-rating").innerText = product.rating.rate;
+
+    // ✅ Store product data for cart
+    const addToCartBtn = document.getElementById("add-to-cart-btn");
+    addToCartBtn.dataset.productId = product.id;
+    addToCartBtn.dataset.price = product.price;
 }

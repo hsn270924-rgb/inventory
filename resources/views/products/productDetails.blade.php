@@ -27,7 +27,7 @@
         <div id="selected-product" class="grid grid-cols-1 md:grid-cols-2 gap-10 bg-white p-6 rounded-lg shadow">
 
             <!-- IMAGE -->
-            <div class="border rounded-lg flex items-center justify-center p-6">
+            <div class="border border-gray-200 rounded-lg flex items-center justify-center p-6">
                 <img id="selected-image" src="" alt="Product" class="object-contain h-64">
             </div>
 
@@ -57,13 +57,15 @@
 
                 <!-- CART -->
                 <div class="flex items-center gap-4">
-                    <input type="number" value="1" min="1" class="w-16 border rounded px-2 py-1 text-center">
+                    <input type="number" value="1" min="1"
+                        class="w-16 border border-gray-200 rounded-lg px-2 py-1 text-center">
 
-                    <button class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+                    <button id="add-to-cart-btn"
+                        class="bg-blue-600 text-white px-6 py-2 border-gray-200 rounded-lg hover:bg-blue-700">
                         Add to Cart
                     </button>
 
-                    <button class="border rounded p-2 hover:bg-gray-100">
+                    <button class="border border-gray-200 rounded-lg p-2 hover:bg-gray-100">
                         ❤️
                     </button>
                 </div>
@@ -75,7 +77,7 @@
 
             <!-- SEARCH INPUT -->
             <input type="text" id="search-input" placeholder="Search products..."
-                class="w-full border rounded px-4 py-2 mb-4 focus:ring-2 focus:ring-blue-500">
+                class="w-full border border-gray-200 rounded-lg px-4 py-2 mb-4 focus:ring-2 focus:ring-blue-500">
 
             <!-- SEARCH RESULTS -->
             <div id="search-results" class="space-y-3"></div>
