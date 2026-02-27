@@ -11,7 +11,7 @@ class ProductController extends Controller
     public function index()
     {
         $products = Http::get('https://fakestoreapi.com/products')->json();
-        dd($products);
+
         return view('products.index', compact('products'));
     }
 

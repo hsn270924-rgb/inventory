@@ -10,40 +10,52 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
-    public function store(Request $req)
+    public function store(Request $request)
     {
-        $req->validate([
-            'product_id' => 'required|integer',
-            'quantity' => 'required|integer|min:1'
-        ]);
+        $cart = session('cart', []);
 
-        return DB::transaction(function () use ($req) {
+        if (empty($cart)) {
+            return response()->json(['message' => 'Cart is empty'], 422);
+        }
 
-            $product = Product::where('id', $req->product_id)
-                ->lockForUpdate()
-                ->first();
+        try {
+            DB::transaction(function () use ($cart) {
 
-            if (!$product) {
-                return response()->json(['message' => 'Product not found'], 404);
-            }
+                foreach ($cart as $productId => $item) {
 
-            if ($product->stock < $req->quantity) {
-                return response()->json(['message' => 'Insufficient stock'], 422);
-            }
+                    $product = Product::where('id', $productId)
+                        ->lockForUpdate()
+                        ->first();
 
-            // deduct stock
-            $product->decrement('stock', $req->quantity);
+                    if (!$product) {
+                        throw new \Exception('Product not found');
+                    }
 
-            $order = Order::create([
-                'product_id' => $product->id,
-                'quantity' => $req->quantity,
-                'total_price' => $product->price * $req->quantity,
-            ]);
+                    if ($product->stock < $item['quantity']) {
+                        throw new \Exception('Insufficient stock for product ID ' . $productId);
+                    }
+
+                    // Deduct stock safely
+                    $product->decrement('stock', $item['quantity']);
+
+                    Order::create([
+                        'product_id'  => $product->id,
+                        'quantity'    => $item['quantity'],
+                        'total_price' => $product->price * $item['quantity'],
+                    ]);
+                }
+            });
+
+            session()->forget('cart');
 
             return response()->json([
                 'message' => 'Order placed successfully',
-                'order' => $order,
             ]);
-        });
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Order failed',
+                'error'   => $e->getMessage(),
+            ], 422);
+        }
     }
 }

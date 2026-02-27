@@ -78,3 +78,31 @@ function setSelectedProduct(product) {
     addToCartBtn.dataset.productId = product.id;
     addToCartBtn.dataset.price = product.price;
 }
+
+document.getElementById("add-to-cart-btn").addEventListener("click", () => {
+    const qty = document.getElementById("order-qty").value;
+    const btn = document.getElementById("add-to-cart-btn");
+
+    fetch("/cart/add", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": document
+                .querySelector('meta[name="csrf-token"]')
+                .getAttribute("content"),
+        },
+        body: JSON.stringify({
+            product_id: btn.dataset.productId,
+            quantity: qty,
+        }),
+    })
+        .then((res) => res.json())
+        .then((data) => {
+            console.log("🛒 Cart:", data.cart);
+            alert("Added to cart ✅");
+        })
+        .catch((err) => {
+            console.error(err);
+            alert("Failed ❌");
+        });
+});

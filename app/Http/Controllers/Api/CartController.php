@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class CartController extends Controller
 {
@@ -11,17 +13,23 @@ class CartController extends Controller
     {
         $request->validate([
             'product_id' => 'required|integer',
-            'price' => 'required|numeric',
+            'quantity'   => 'required|integer|min:1',
         ]);
+
+        $product = Product::find($request->product_id);
+
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
 
         $cart = session()->get('cart', []);
 
-        if (isset($cart[$request->product_id])) {
-            $cart[$request->product_id]['quantity']++;
+        if (isset($cart[$product->id])) {
+            $cart[$product->id]['quantity'] += $request->quantity;
         } else {
-            $cart[$request->product_id] = [
-                'price' => $request->price,
-                'quantity' => 1,
+            $cart[$product->id] = [
+                'price'    => $product->price,
+                'quantity' => $request->quantity,
             ];
         }
 
@@ -29,7 +37,14 @@ class CartController extends Controller
 
         return response()->json([
             'message' => 'Added to cart',
-            'cart' => $cart,
+            'cart'    => $cart,
+        ]);
+    }
+
+    public function view()
+    {
+        return view('cart.index', [
+            'cart' => session('cart', [])
         ]);
     }
 }
