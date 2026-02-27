@@ -3,6 +3,7 @@
 @section('title', 'Your Cart')
 
 @section('content')
+
     <div class="max-w-4xl mx-auto mt-10 bg-white p-6 rounded-lg shadow">
         <h2 class="text-xl font-semibold mb-6">Shopping Cart</h2>
 
@@ -16,7 +17,7 @@
 
                 <div class="flex items-center justify-between border-b py-4">
                     <div class="flex items-center gap-4">
-                        <img src="{{ $item['image'] }}" class="w-16 h-16 object-contain">
+                        {{-- <img src="{{ $item['image'] }}" class="w-16 h-16 object-contain"> --}}
                         <div>
                             <p class="font-medium">{{ $item['title'] }}</p>
                             <p class="text-sm text-gray-500">

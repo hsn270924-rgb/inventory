@@ -4,34 +4,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let products = [];
 
-    /* 1️⃣ Load products list (for search only) */
+    /* 1️⃣ Load products list */
     fetch("https://fakestoreapi.com/products")
         .then((res) => res.json())
         .then((data) => {
             products = data;
 
-            // 🔥 Load first product DETAIL by default
+            // Load first product by default
             loadProductDetail(products[0].id);
         });
 
-    /* 2️⃣ Search handler */
-    searchInput.addEventListener("input", () => {
-        const query = searchInput.value.toLowerCase();
+    /* 🔹 Render search results */
+    function renderResults(list) {
         resultsBox.innerHTML = "";
 
-        if (!query) {
-            resultsBox.classList.add("hidden");
-            return;
-        }
-
-        const filtered = products.filter((p) =>
-            p.title.toLowerCase().includes(query)
-        );
-
-        filtered.forEach((product) => {
+        list.forEach((product) => {
             const item = document.createElement("div");
             item.className =
-                "flex items-center gap-4 border rounded p-3 cursor-pointer hover:bg-gray-50";
+                "flex items-center gap-4 border border-gray-200 rounded-lg p-3 cursor-pointer hover:bg-gray-50";
 
             item.innerHTML = `
                 <img src="${product.image}" class="w-10 h-10 object-contain">
@@ -48,6 +38,38 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         resultsBox.classList.remove("hidden");
+    }
+
+    /* 2️⃣ Show products when input is focused */
+    searchInput.addEventListener("focus", () => {
+        // show first 6 products by default
+        renderResults(products.slice(0, 6));
+    });
+
+    /* 3️⃣ Search handler */
+    searchInput.addEventListener("input", () => {
+        const query = searchInput.value.toLowerCase();
+
+        if (!query) {
+            renderResults(products.slice(0, 6));
+            return;
+        }
+
+        const filtered = products.filter((p) =>
+            p.title.toLowerCase().includes(query)
+        );
+
+        renderResults(filtered);
+    });
+
+    /* 4️⃣ Hide results when clicking outside */
+    document.addEventListener("click", (e) => {
+        if (
+            !e.target.closest("#search-input") &&
+            !e.target.closest("#search-results")
+        ) {
+            resultsBox.classList.add("hidden");
+        }
     });
 });
 

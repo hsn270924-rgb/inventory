@@ -8,18 +8,16 @@ use Illuminate\Support\Facades\Http;
 
 class ProductController extends Controller
 {
+    // public function index()
+    // {
+    //     $products = Http::get('https://fakestoreapi.com/products')->json();
+
+    //     return view('products.index', compact('products'));
+    // }
+
     public function index()
     {
-        $products = Http::get('https://fakestoreapi.com/products')->json();
-
-        return view('products.index', compact('products'));
-    }
-
-    public function show($id)
-    {
-        $product = Http::get("https://fakestoreapi.com/products/{$id}")->json();
-
-        return view('products.productDetails', compact('product'));
+        return view('products.productDetails');
     }
 
     public function search(Request $request)
